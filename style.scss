@@ -188,19 +188,19 @@ table {
 
 //new
 
-sidenote,
-.marginnote {
+.sidenote,
+.marginnote,
+figcaption {
     float: right;
     clear: right;
-    left: calc(100% + 4rem);
+    margin-right: -60%;
     width: 50%;
     margin-top: 0.3rem;
     margin-bottom: 0;
-    font-size: 80%;
-    line-height: 1.1;
+    font-size: 1.1rem;
+    line-height: 1.3;
     vertical-align: baseline;
     position: relative;
-    max-width: 400px;
 }
 
 .sidenote-number {
