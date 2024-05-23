@@ -192,10 +192,7 @@ table {
 /*span*/.sidenote,
 figcaption {
     font-size: 80%;
-    clear: right;
-    float: right;
-   // left: auto;
-  //  display: block;
+    left: calc(100% + 4rem);
     line-height: 1.1rem;
     max-width: 400px;
     padding-top: 1rem;
@@ -203,6 +200,7 @@ figcaption {
     top: 0;
     width: 50%;
 }
+
 
 .sidenote-number {
     counter-increment: sidenote-counter;
