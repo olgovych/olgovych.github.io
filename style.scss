@@ -53,7 +53,7 @@ body {
     background: #fffff8;
     color: #111;
     counter-reset: sidenote-counter;
-    font: 1.2rem/1.9rem "inter", Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+    font: 1.1rem/1.8rem "inter", Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
     height: 100%;
     margin: 0 auto;
     max-width: 1440px;
@@ -69,9 +69,9 @@ h1,h2,h3,h4,h5,h6 {
     margin: 0;
     text-transform: capitalize;
 }
-h1 { font-size: 3rem; font-style: normal; margin-top: 2.4rem; }
-h2 { font-size: 2rem; margin-top: 4rem; }
-h3 { font-size: 1.5rem; margin-top: 2.4rem; }
+h1 { font-size: 2.8rem; font-style: normal; margin-top: 2.4rem; }
+h2 { font-size: 1.8rem; margin-top: 4rem; }
+h3 { font-size: 1.4rem; margin-top: 2.4rem; }
 
 p,table,blockquote,pre,img,hr,.mini-note,ul li,ol li {
     box-sizing: border-box;
@@ -104,7 +104,7 @@ blockquote {
 
 blockquote footer {
     font-style: normal;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     text-align: right;
 }
 
