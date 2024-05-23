@@ -194,7 +194,8 @@ figcaption {
     font-size: 80%;
     clear: right;
     float: right;
-    left: calc(100% + 4rem);
+    left: auto;
+    display: block;
     line-height: 1.1rem;
     max-width: 400px;
     padding-top: 1rem;
