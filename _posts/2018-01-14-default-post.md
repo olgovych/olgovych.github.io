@@ -192,5 +192,13 @@ Vestibulum rhoncus est pellentesque elit ullamcorper dignissim. Etiam dignissim 
 Risus at ultrices mi tempus imperdiet.<span class="sidenote-number"></span><span class="sidenote">This is the third test lorem ipsum sidenotes. Positioning does indeed need work.
 this is a new line within it</span>Tincidunt eget nullam non nisi. Odio facilisis mauris sit amet. Nisl nunc mi ipsum faucibus vitae aliquet.
 
+Tincidunt eget nullam non nisi. Odio facilisis mauris sit amet. Nisl nunc mi ipsum faucibus vitae aliquet.<label for="sn-demo"
+       class="margin-toggle sidenote-number">
+</label>
+<input type="checkbox"
+       id="sn-demo"
+       class="margin-toggle"/>
+
+
 Risus at ultrices mi tempus imperdiet nulla. Vulputate odio ut enim blandit volutpat maecenas. Nunc pulvinar sapien et ligula ullamcorper malesuada proin libero. Fermentum iaculis eu non diam phasellus vestibulum lorem sed. Pretium quam vulputate dignissim suspendisse. Facilisis sed odio morbi quis commodo. Commodo quis imperdiet massa tincidunt nunc pulvinar. Augue interdum velit euismod in pellentesque massa. Id interdum velit laoreet id donec ultrices tincidunt arcu non. Hac habitasse platea dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Lorem sed risus ultricies tristique. Turpis nunc eget lorem dolor sed viverra. Diam sollicitudin tempor id eu nisl nunc mi. Orci dapibus ultrices in iaculis nunc sed augue. Ipsum consequat nisl vel pretium lectus quam id leo. Donec adipiscing tristique risus nec feugiat in fermentum posuere urna. In ante metus dictum at tempor commodo ullamcorper a. Eget nunc lobortis mattis aliquam faucibus. Libero enim sed faucibus turpis in eu mi bibendum.
 <span class="marginnote">This is an additional sidenote. Ipsum consequat nisl vel pretium lectus quam id leo. Donec adipiscing tristique risus nec feugiat in fermentum posuere urna.</span>
