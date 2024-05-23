@@ -192,7 +192,7 @@ table {
 /*span*/.sidenote,
 figcaption {
     font-size: 80%;
-    clear: right;
+    float: left;
     left: calc(100% + 4rem);
     line-height: 1.1rem;
     max-width: 400px;
