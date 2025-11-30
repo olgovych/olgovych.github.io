@@ -2,3 +2,81 @@
 <div class="bottom-footer">
     <span class="mini-note"></span>
 </div>
+
+<script>
+(function() {
+    function layoutSidenotes() {
+        // Get all sidenote numbers
+        const sidenoteNumbers = document.querySelectorAll('.sidenote-number');
+        const sidenotes = [];
+
+        // Match each sidenote-number with its corresponding sidenote
+        sidenoteNumbers.forEach((marker, index) => {
+            // Find the next sidenote element after this marker
+            let nextElement = marker.nextElementSibling;
+            while (nextElement) {
+                if (nextElement.classList.contains('sidenote')) {
+                    const markerTop = marker.offsetTop;
+                    sidenotes.push({
+                        marker: marker,
+                        element: nextElement,
+                        markerTop: markerTop,
+                        index: index
+                    });
+                    break;
+                }
+                // Look through text nodes and other inline elements
+                if (nextElement.nodeType === 1) {
+                    const foundNote = nextElement.querySelector('.sidenote');
+                    if (foundNote) {
+                        const markerTop = marker.offsetTop;
+                        sidenotes.push({
+                            marker: marker,
+                            element: foundNote,
+                            markerTop: markerTop,
+                            index: index
+                        });
+                        break;
+                    }
+                }
+                nextElement = nextElement.nextElementSibling;
+            }
+        });
+
+        // Position each sidenote and prevent overlaps
+        let previousBottom = 0;
+
+        sidenotes.forEach((note, idx) => {
+            // Set initial position based on marker location
+            let desiredTop = note.markerTop;
+
+            // If this would overlap with the previous sidenote, push it down
+            if (desiredTop < previousBottom) {
+                desiredTop = previousBottom;
+            }
+
+            // Apply the position
+            note.element.style.top = desiredTop + 'px';
+
+            // Update previousBottom for the next sidenote
+            // Add a small gap (1rem = approximately 17.6px based on 1.1rem line height)
+            const sidenoteHeight = note.element.offsetHeight;
+            previousBottom = desiredTop + sidenoteHeight + 17.6; // 1rem gap
+        });
+    }
+
+    // Run on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', layoutSidenotes);
+    } else {
+        layoutSidenotes();
+    }
+
+    // Re-run on window resize to handle responsive layout changes
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(layoutSidenotes, 100);
+    });
+})();
+</script>
