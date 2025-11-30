@@ -6,77 +6,70 @@
 <script>
 (function() {
     function layoutSidenotes() {
-        // Get all sidenote numbers
+        // Get all sidenote markers and sidenote elements
         const sidenoteNumbers = document.querySelectorAll('.sidenote-number');
-        const sidenotes = [];
+        const sidenoteElements = document.querySelectorAll('.sidenote');
 
-        // Match each sidenote-number with its corresponding sidenote
-        sidenoteNumbers.forEach((marker, index) => {
-            // Find the next sidenote element after this marker
-            let nextElement = marker.nextElementSibling;
-            while (nextElement) {
-                if (nextElement.classList.contains('sidenote')) {
-                    const markerTop = marker.offsetTop;
-                    sidenotes.push({
-                        marker: marker,
-                        element: nextElement,
-                        markerTop: markerTop,
-                        index: index
-                    });
-                    break;
-                }
-                // Look through text nodes and other inline elements
-                if (nextElement.nodeType === 1) {
-                    const foundNote = nextElement.querySelector('.sidenote');
-                    if (foundNote) {
-                        const markerTop = marker.offsetTop;
-                        sidenotes.push({
-                            marker: marker,
-                            element: foundNote,
-                            markerTop: markerTop,
-                            index: index
-                        });
-                        break;
-                    }
-                }
-                nextElement = nextElement.nextElementSibling;
+        // Match markers with sidenotes by index
+        const pairs = [];
+        const minLength = Math.min(sidenoteNumbers.length, sidenoteElements.length);
+
+        for (let i = 0; i < minLength; i++) {
+            const marker = sidenoteNumbers[i];
+            const sidenote = sidenoteElements[i];
+
+            // Get the absolute position of the marker
+            const markerRect = marker.getBoundingClientRect();
+            const parent = sidenote.offsetParent;
+
+            if (parent) {
+                const parentRect = parent.getBoundingClientRect();
+                const relativeTop = markerRect.top - parentRect.top;
+
+                pairs.push({
+                    marker: marker,
+                    element: sidenote,
+                    markerTop: relativeTop,
+                    index: i
+                });
             }
-        });
+        }
 
-        // Position each sidenote and prevent overlaps
+        // Position sidenotes and prevent overlaps
         let previousBottom = 0;
 
-        sidenotes.forEach((note, idx) => {
-            // Set initial position based on marker location
-            let desiredTop = note.markerTop;
+        pairs.forEach((pair) => {
+            let desiredTop = pair.markerTop;
 
-            // If this would overlap with the previous sidenote, push it down
+            // Prevent overlap with previous sidenote
             if (desiredTop < previousBottom) {
                 desiredTop = previousBottom;
             }
 
-            // Apply the position
-            note.element.style.top = desiredTop + 'px';
+            // Apply position
+            pair.element.style.top = desiredTop + 'px';
 
-            // Update previousBottom for the next sidenote
-            // Add a small gap (1rem = approximately 17.6px based on 1.1rem line height)
-            const sidenoteHeight = note.element.offsetHeight;
-            previousBottom = desiredTop + sidenoteHeight + 17.6; // 1rem gap
+            // Calculate bottom position for next iteration
+            const sidenoteHeight = pair.element.offsetHeight;
+            previousBottom = desiredTop + sidenoteHeight + 20; // 20px gap
         });
     }
 
-    // Run on page load
+    // Run after DOM is fully loaded
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', layoutSidenotes);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a bit for styles to apply
+            setTimeout(layoutSidenotes, 50);
+        });
     } else {
-        layoutSidenotes();
+        setTimeout(layoutSidenotes, 50);
     }
 
-    // Re-run on window resize to handle responsive layout changes
+    // Re-run on window resize
     let resizeTimeout;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(layoutSidenotes, 100);
+        resizeTimeout = setTimeout(layoutSidenotes, 150);
     });
 })();
 </script>
