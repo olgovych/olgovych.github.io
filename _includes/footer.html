@@ -6,29 +6,19 @@
 <script>
 (function() {
     function layoutSidenotes() {
-        // Skip on mobile where sidenotes are position:relative
         if (window.matchMedia('(max-width: 850px)').matches) return;
-
-        // Get all sidenote markers and sidenote elements
         var sidenoteNumbers = document.querySelectorAll('.sidenote-number');
         var sidenoteElements = document.querySelectorAll('.sidenote');
-
-        // Match markers with sidenotes by index, grouped by offsetParent
         var groups = new Map();
         var minLength = Math.min(sidenoteNumbers.length, sidenoteElements.length);
-
         for (var i = 0; i < minLength; i++) {
             var marker = sidenoteNumbers[i];
             var sidenote = sidenoteElements[i];
             var parent = sidenote.offsetParent;
-
             if (!parent) continue;
-
-            // Get marker position relative to the sidenote's offsetParent
             var markerRect = marker.getBoundingClientRect();
             var parentRect = parent.getBoundingClientRect();
             var relativeTop = markerRect.top - parentRect.top;
-
             if (!groups.has(parent)) {
                 groups.set(parent, []);
             }
@@ -37,48 +27,32 @@
                 markerTop: relativeTop
             });
         }
-
-        // Position sidenotes within each group independently
         groups.forEach(function(pairs) {
             var previousBottom = 0;
-
             pairs.forEach(function(pair) {
                 var desiredTop = pair.markerTop;
-
-                // Prevent overlap with previous sidenote in same parent
                 if (desiredTop < previousBottom) {
                     desiredTop = previousBottom;
                 }
-
-                // Apply position
                 pair.element.style.top = desiredTop + 'px';
-
-                // Track bottom for next sidenote in this group
                 var sidenoteHeight = pair.element.offsetHeight;
                 previousBottom = desiredTop + sidenoteHeight + 20;
             });
         });
     }
-
     function run() {
         requestAnimationFrame(function() {
             layoutSidenotes();
         });
     }
-
-    // Run after DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', run);
     } else {
         run();
     }
-
-    // Re-run after all resources (fonts, images) have loaded
     window.addEventListener('load', function() {
         layoutSidenotes();
     });
-
-    // Re-run on window resize
     var resizeTimeout;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
