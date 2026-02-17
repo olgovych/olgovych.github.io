@@ -6,67 +6,80 @@
 <script>
 (function() {
     function layoutSidenotes() {
+        // Skip on mobile where sidenotes are position:relative
+        if (window.matchMedia('(max-width: 850px)').matches) return;
+
         // Get all sidenote markers and sidenote elements
-        const sidenoteNumbers = document.querySelectorAll('.sidenote-number');
-        const sidenoteElements = document.querySelectorAll('.sidenote');
+        var sidenoteNumbers = document.querySelectorAll('.sidenote-number');
+        var sidenoteElements = document.querySelectorAll('.sidenote');
 
-        // Match markers with sidenotes by index
-        const pairs = [];
-        const minLength = Math.min(sidenoteNumbers.length, sidenoteElements.length);
+        // Match markers with sidenotes by index, grouped by offsetParent
+        var groups = new Map();
+        var minLength = Math.min(sidenoteNumbers.length, sidenoteElements.length);
 
-        for (let i = 0; i < minLength; i++) {
-            const marker = sidenoteNumbers[i];
-            const sidenote = sidenoteElements[i];
+        for (var i = 0; i < minLength; i++) {
+            var marker = sidenoteNumbers[i];
+            var sidenote = sidenoteElements[i];
+            var parent = sidenote.offsetParent;
 
-            // Get the absolute position of the marker
-            const markerRect = marker.getBoundingClientRect();
-            const parent = sidenote.offsetParent;
+            if (!parent) continue;
 
-            if (parent) {
-                const parentRect = parent.getBoundingClientRect();
-                const relativeTop = markerRect.top - parentRect.top;
+            // Get marker position relative to the sidenote's offsetParent
+            var markerRect = marker.getBoundingClientRect();
+            var parentRect = parent.getBoundingClientRect();
+            var relativeTop = markerRect.top - parentRect.top;
 
-                pairs.push({
-                    marker: marker,
-                    element: sidenote,
-                    markerTop: relativeTop,
-                    index: i
-                });
+            if (!groups.has(parent)) {
+                groups.set(parent, []);
             }
+            groups.get(parent).push({
+                element: sidenote,
+                markerTop: relativeTop
+            });
         }
 
-        // Position sidenotes and prevent overlaps
-        let previousBottom = 0;
+        // Position sidenotes within each group independently
+        groups.forEach(function(pairs) {
+            var previousBottom = 0;
 
-        pairs.forEach((pair) => {
-            let desiredTop = pair.markerTop;
+            pairs.forEach(function(pair) {
+                var desiredTop = pair.markerTop;
 
-            // Prevent overlap with previous sidenote
-            if (desiredTop < previousBottom) {
-                desiredTop = previousBottom;
-            }
+                // Prevent overlap with previous sidenote in same parent
+                if (desiredTop < previousBottom) {
+                    desiredTop = previousBottom;
+                }
 
-            // Apply position
-            pair.element.style.top = desiredTop + 'px';
+                // Apply position
+                pair.element.style.top = desiredTop + 'px';
 
-            // Calculate bottom position for next iteration
-            const sidenoteHeight = pair.element.offsetHeight;
-            previousBottom = desiredTop + sidenoteHeight + 20; // 20px gap
+                // Track bottom for next sidenote in this group
+                var sidenoteHeight = pair.element.offsetHeight;
+                previousBottom = desiredTop + sidenoteHeight + 20;
+            });
         });
     }
 
-    // Run after DOM is fully loaded
+    function run() {
+        requestAnimationFrame(function() {
+            layoutSidenotes();
+        });
+    }
+
+    // Run after DOM is ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            // Wait a bit for styles to apply
-            setTimeout(layoutSidenotes, 50);
-        });
+        document.addEventListener('DOMContentLoaded', run);
     } else {
-        setTimeout(layoutSidenotes, 50);
+        run();
     }
+
+    // Re-run after all resources (fonts, images) have loaded
+    window.addEventListener('load', function() {
+        layoutSidenotes();
+    });
 
     // Re-run on window resize
-    let resizeTimeout;
+    var resizeTimeout;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(layoutSidenotes, 150);
